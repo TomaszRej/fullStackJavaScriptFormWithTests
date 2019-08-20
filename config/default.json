@@ -1,0 +1,4 @@
+{
+  "mongoURI": "mongodb+srv://Tom:fLOu7vN23ikpIBX0@users-kbkbm.mongodb.net/RestApi?retryWrites=true",
+  "jwtSecret": "mojJSONwebTokenVerySecret"
+}
