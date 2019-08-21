@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 // const authRoutes = require('./routes/auth');
 // const postRoutes = require('./routes/post');
 
+const registeringForEventRoutes = require('./routes/registeringForEventRoutes');
+
 
 
 const app = express();
@@ -25,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 
-//app.use('/', registeringForEventRoutes);
+app.use('/registerForEvent', registeringForEventRoutes);
 
 
 

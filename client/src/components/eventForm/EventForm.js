@@ -1,5 +1,9 @@
-import React, {Component} from "react";
-import {Row, Col} from '../layout/grid';
+import React, { Component } from "react";
+import classNames from "classnames";
+import { connect } from "react-redux";
+import  {register}  from "../../redux/actions/RegisterForEventAction";
+import validate from "../../utilities/validation";
+import { Row, Col } from "../layout/grid";
 
 
 class EventForm extends Component {
@@ -34,7 +38,6 @@ class EventForm extends Component {
         },
         touched: false,
         errors: []
-
       },
       eventDate: {
         val: "",
@@ -45,40 +48,97 @@ class EventForm extends Component {
         touched: false,
         errors: []
       },
-
+      canSubmit: false,
+      submitted: false,
+      showSuccessMessage: false
     }
   }
 
   handleChange = e => {
     e.persist();
+    const name = e.target.name
+    const value = e.target.value
+
+    const { validationRules } = this.state[name];
+    const validationResult = {};
+
+    validationResult.isValid = validate(value, validationRules).isValid;
+    validationResult.errors = validate(value, validationRules).errors;
+
     this.setState(prevState => {
       return {
         ...prevState,
-        [e.target.name]: {
-          ...prevState[e.target.name],
-          val: e.target.value,
-          // valid: validationResult.isValid ? validationResult.isValid : false,
+        [name]: {
+          ...prevState[name],
+          val: value,
+          valid: validationResult.isValid ? validationResult.isValid : false,
           touched: true,
-          //errors: validationResult.errors ? validationResult.errors : []
-
+          errors: validationResult.errors ? validationResult.errors : []
         }
       };
+    }, () => {
+      const { firstName, lastName, email, eventDate } = this.state;
+      const canSubmit = Boolean(firstName.val) && Boolean(lastName.val) && Boolean(email.val) && Boolean(eventDate.val);
+      this.setState({
+        canSubmit: canSubmit
+      })
     });
-
-
   };
 
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {firstName, lastName, email, eventDate} = this.state;
+    const { firstName, lastName, email, eventDate } = this.state;
 
-    console.log(firstName.val, lastName.val, email.val, eventDate.val)
-  };
+    if (firstName.valid && lastName.valid && email.valid && eventDate.valid) {
+      this.clearInputs();
+      this.props.register({firstName: firstName.val, lastName: lastName.val} );
+    }
+
+    this.setState({
+      submitted: true,
+    })
+  }
+
+
+  clearInputs = () => {
+    for (const key in this.state) {
+      if (typeof this.state[key] === "object") {
+        this.setState(prevState => {
+          return {
+            ...prevState,
+            [key]: {
+              ...prevState[key],
+              val: "",
+              valid: false,
+              touched: false,
+              errors: []
+            }
+          };
+        })
+      }
+    }
+  }
+
+  createInputClass = (input) => {
+    const { submitted } = this.state
+    const validationClass = classNames({
+      "form-control": true,
+      "is-valid": submitted && input.touched && input.valid,
+      "is-invalid": submitted && input.touched && !input.valid
+    });
+    return validationClass
+  }
 
 
   render() {
-    const {firstName, lastName, email, eventDate} = this.state;
+    const { firstName, lastName, email, eventDate, canSubmit } = this.state;
+
+    const firstNameClass = this.createInputClass(firstName);
+    const lastNameClass = this.createInputClass(lastName);
+    const emailClass = this.createInputClass(email);
+    const eventDateClass = this.createInputClass(eventDate);
+
     return (
       <div className="card">
         <div className="card-body">
@@ -86,15 +146,15 @@ class EventForm extends Component {
             <Row>
               <Col>
                 <div className="form-group">
-                  <label htmlFor="firstName">First name</label>
+                  <label htmlFor="firstName">First name{this.props.loading ? "tak": "nie"}</label>
                   <input type="text"
-                         value={firstName.val}
-                         onChange={this.handleChange}
-                         className="form-control is-valid"
-                         id="firstName"
-                         name="firstName"
-                         placeholder="First name"
-                         required
+                    value={firstName.val}
+                    onChange={this.handleChange}
+                    className={firstNameClass}
+                    id="firstName"
+                    name="firstName"
+                    placeholder="First name"
+                    required
                   />
                   <div className="valid-feedback">
                     This field is required
@@ -105,13 +165,13 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="last_name">Last name</label>
                   <input type="text"
-                         value={lastName.val}
-                         onChange={this.handleChange}
-                         className="form-control is-invalid"
-                         id="last_name"
-                         name="lastName"
-                         placeholder="Last name"
-                         required
+                    value={lastName.val}
+                    onChange={this.handleChange}
+                    className={lastNameClass}
+                    id="last_name"
+                    name="lastName"
+                    placeholder="Last name"
+                    required
                   />
                   <div className="invalid-feedback">
                     This field is required
@@ -124,12 +184,12 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="email">Email address</label>
                   <input type="email"
-                         value={email.val}
-                         onChange={this.handleChange}
-                         className="form-control is-invalid"
-                         id="email"
-                         name="email"
-                         placeholder="Email"
+                    value={email.val}
+                    onChange={this.handleChange}
+                    className={emailClass}
+                    id="email"
+                    name="email"
+                    placeholder="Email"
                   />
                   <div className="invalid-feedback">
                     Email address is invalid
@@ -140,12 +200,12 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="event_date">Event date</label>
                   <input type="date"
-                         value={eventDate.val}
-                         onChange={this.handleChange}
-                         className="form-control is-invalid"
-                         id="event_date"
-                         name="eventDate"
-                         placeholder="Event"
+                    value={eventDate.val}
+                    onChange={this.handleChange}
+                    className={eventDateClass}
+                    id="event_date"
+                    name="eventDate"
+                    placeholder="Event"
                   />
 
                   <div className="invalid-feedback">
@@ -156,7 +216,7 @@ class EventForm extends Component {
             </Row>
             <Row>
               <Col>
-                <button type="submit" disabled={false} className="btn btn-primary btn-block">Submit</button>
+                <button type="submit" disabled={!canSubmit} className="btn btn-primary btn-block">Submit</button>
               </Col>
             </Row>
           </form>
@@ -166,4 +226,10 @@ class EventForm extends Component {
   }
 }
 
-export default EventForm;
+const mapStateToProps = state => {
+  return {
+    loading: state.RegisterForEventReducer.loading
+  }
+}
+
+export default connect(mapStateToProps,{ register })(EventForm);
