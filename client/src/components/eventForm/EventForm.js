@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import classNames from "classnames";
-import { connect } from "react-redux";
-import  {register}  from "../../redux/actions/RegisterForEventAction";
+import {connect} from "react-redux";
+import {register} from "../../redux/actions/RegisterForEventAction";
 import validate from "../../utilities/validation";
-import { Row, Col } from "../layout/grid";
+import createRegisterObject from "../../utilities/helpers/createRegisterObject"
+import {Row, Col} from "../layout/grid";
 
 
 class EventForm extends Component {
@@ -59,7 +60,7 @@ class EventForm extends Component {
     const name = e.target.name
     const value = e.target.value
 
-    const { validationRules } = this.state[name];
+    const {validationRules} = this.state[name];
     const validationResult = {};
 
     validationResult.isValid = validate(value, validationRules).isValid;
@@ -77,7 +78,7 @@ class EventForm extends Component {
         }
       };
     }, () => {
-      const { firstName, lastName, email, eventDate } = this.state;
+      const {firstName, lastName, email, eventDate} = this.state;
       const canSubmit = Boolean(firstName.val) && Boolean(lastName.val) && Boolean(email.val) && Boolean(eventDate.val);
       this.setState({
         canSubmit: canSubmit
@@ -88,17 +89,16 @@ class EventForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, eventDate } = this.state;
+    const {firstName, lastName, email, eventDate} = this.state;
 
     if (firstName.valid && lastName.valid && email.valid && eventDate.valid) {
       this.clearInputs();
-      this.props.register({firstName: firstName.val, lastName: lastName.val} );
+      this.props.register(createRegisterObject(this.state));
     }
-
     this.setState({
       submitted: true,
     })
-  }
+  };
 
 
   clearInputs = () => {
@@ -118,21 +118,21 @@ class EventForm extends Component {
         })
       }
     }
-  }
+  };
 
   createInputClass = (input) => {
-    const { submitted } = this.state
+    const {submitted} = this.state
     const validationClass = classNames({
       "form-control": true,
       "is-valid": submitted && input.touched && input.valid,
       "is-invalid": submitted && input.touched && !input.valid
     });
     return validationClass
-  }
+  };
 
 
   render() {
-    const { firstName, lastName, email, eventDate, canSubmit } = this.state;
+    const {firstName, lastName, email, eventDate, canSubmit} = this.state;
 
     const firstNameClass = this.createInputClass(firstName);
     const lastNameClass = this.createInputClass(lastName);
@@ -146,15 +146,15 @@ class EventForm extends Component {
             <Row>
               <Col>
                 <div className="form-group">
-                  <label htmlFor="firstName">First name{this.props.loading ? "tak": "nie"}</label>
+                  <label htmlFor="firstName">First name{this.props.loading ? "tak" : "nie"}</label>
                   <input type="text"
-                    value={firstName.val}
-                    onChange={this.handleChange}
-                    className={firstNameClass}
-                    id="firstName"
-                    name="firstName"
-                    placeholder="First name"
-                    required
+                         value={firstName.val}
+                         onChange={this.handleChange}
+                         className={firstNameClass}
+                         id="firstName"
+                         name="firstName"
+                         placeholder="First name"
+                         required
                   />
                   <div className="valid-feedback">
                     This field is required
@@ -165,13 +165,13 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="last_name">Last name</label>
                   <input type="text"
-                    value={lastName.val}
-                    onChange={this.handleChange}
-                    className={lastNameClass}
-                    id="last_name"
-                    name="lastName"
-                    placeholder="Last name"
-                    required
+                         value={lastName.val}
+                         onChange={this.handleChange}
+                         className={lastNameClass}
+                         id="last_name"
+                         name="lastName"
+                         placeholder="Last name"
+                         required
                   />
                   <div className="invalid-feedback">
                     This field is required
@@ -184,12 +184,12 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="email">Email address</label>
                   <input type="email"
-                    value={email.val}
-                    onChange={this.handleChange}
-                    className={emailClass}
-                    id="email"
-                    name="email"
-                    placeholder="Email"
+                         value={email.val}
+                         onChange={this.handleChange}
+                         className={emailClass}
+                         id="email"
+                         name="email"
+                         placeholder="Email"
                   />
                   <div className="invalid-feedback">
                     Email address is invalid
@@ -200,12 +200,12 @@ class EventForm extends Component {
                 <div className="form-group">
                   <label htmlFor="event_date">Event date</label>
                   <input type="date"
-                    value={eventDate.val}
-                    onChange={this.handleChange}
-                    className={eventDateClass}
-                    id="event_date"
-                    name="eventDate"
-                    placeholder="Event"
+                         value={eventDate.val}
+                         onChange={this.handleChange}
+                         className={eventDateClass}
+                         id="event_date"
+                         name="eventDate"
+                         placeholder="Event"
                   />
 
                   <div className="invalid-feedback">
@@ -232,4 +232,4 @@ const mapStateToProps = state => {
   }
 }
 
-export default connect(mapStateToProps,{ register })(EventForm);
+export default connect(mapStateToProps, {register})(EventForm);
