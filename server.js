@@ -25,7 +25,7 @@ app.use((req, res, next) => {
 });
 
 
-//app.use('/', registeringForEventFormRoutes);
+//app.use('/', registeringForEventRoutes);
 
 
 
@@ -36,6 +36,11 @@ app.use((error, req, res, next) => {
   const data = error.data;
   res.status(status).json({ message: message, data: data });
 });
+
+
+
+
+
 
 
 const port = 8000;
