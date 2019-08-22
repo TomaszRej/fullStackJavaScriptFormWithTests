@@ -25,7 +25,6 @@ class EventForm extends Component {
         valid: false,
         validationRules: {
           notEmpty: true,
-          minLength: 6
         },
         touched: false,
         errors: []
@@ -154,6 +153,18 @@ class EventForm extends Component {
       <div className="card">
         <div className="card-body">
           <form onSubmit={this.handleSubmit} noValidate>
+            <Row>
+              <Col>
+
+                <div className="alert alert-danger " role="alert">
+                  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+              </Col>
+            </Row>
             <Row>
               <Col>
                 <div className="form-group">

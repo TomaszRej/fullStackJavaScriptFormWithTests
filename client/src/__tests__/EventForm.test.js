@@ -7,16 +7,26 @@ import '@testing-library/jest-dom/extend-expect';
 
 
 
-afterEach(cleanup)
+afterEach(cleanup);
+
+
+const renderComponent = () => render(
+  <Provider store={store}>
+    <EventForm />
+  </Provider>
+);
+
 
 it("button should be disable", () => {
-  const { getByText } = render(<Provider store={store}><EventForm /></Provider>);
+  const { getByText } = renderComponent();
   const button = getByText("Submit");
+
   expect(button.disabled).toBe(true);
 });
 
+
 it("button should not be disable when all fields are filled in", () => {
-  const { getByText, getByLabelText } = render(<Provider store={store}><EventForm /></Provider>);
+  const { getByText, getByLabelText } = renderComponent();
 
   const values = {
     "First name": "FirstNameTestValue",
@@ -32,7 +42,8 @@ it("button should not be disable when all fields are filled in", () => {
 
   const button = getByText("Submit");
   expect(button.disabled).toBe(false);
-})
+});
+
 
 it("should display invalid email message when submitted with invalid email", () => {
   const { getByText, getByLabelText } = render(<Provider store={store}><EventForm /></Provider>);
@@ -50,12 +61,12 @@ it("should display invalid email message when submitted with invalid email", () 
   }
 
   expect(getByText("Email address is invalid")).toBeInTheDocument()
-})
+});
 
 
 it("should render loader compnent when loading", () => {
+  const { getByText,getByLabelText } = renderComponent();
 
-  const { getByText,getByLabelText, findByText } = render(<Provider store={store}><EventForm /></Provider>);
   const values = {
     "First name": "FirstNameTestValue",
     "Last name": "LastNameTestValue",
@@ -68,9 +79,9 @@ it("should render loader compnent when loading", () => {
     fireEvent.change(input, { target: { value: values[key] } });
   }
 
-  fireEvent.click(getByText("Submit"))
+  fireEvent.click(getByText("Submit"));
   expect(getByText("Loading...")).toBeInTheDocument();
-})
+});
 
 
 

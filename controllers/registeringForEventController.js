@@ -1,11 +1,9 @@
 const Joi = require('joi');
-//const Post = require('../models/Post');
-//const User = require('../models/User');
+const Event = require('../models//Event');
 
 
 exports.register = async (req, res, next) => {
 
-  console.log(req.body)
   const schema = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
@@ -20,17 +18,16 @@ exports.register = async (req, res, next) => {
     return
   }
 
-
   try {
-    // const newPost = new Post({
-    //   title: req.body.title,
-    //   description: req.body.description,
-    //   author: req.body.author,
-    //   authorName: req.userName
-    // });
+    const newEvent = new Event({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      eventDate: req.body.eventDate
+    });
 
-    // newPost.save();
-    res.status(201).json({message: "Post created!", data: {"firstName": req.body.firstName}})
+    newEvent.save();
+    res.status(201).json({message: "Event created!", data: newEvent});
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

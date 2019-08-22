@@ -30,8 +30,6 @@ app.use((req, res, next) => {
 app.use('/registerForEvent', registeringForEventRoutes);
 
 
-
-
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message = error.message;
@@ -40,32 +38,19 @@ app.use((error, req, res, next) => {
 });
 
 
+const db = config.get('mongoURI');
+
+let server;
+mongoose.connect(db, {
+    useNewUrlParser: true,
+    useCreateIndex: true
+  })
+  .then(() => {
+    const port =  8000;
+    server = app.listen(port, () => console.log(`Server started on port ${port}`));
 
 
+  })
+  .catch(err => console.log(err));
 
-
-
-const port = 8000;
-app.listen(port, () => console.log(`Server started on port ${port}`));
-
-
-// const db = config.get('mongoURI');
-//
-// mongoose
-//   .connect(db, {
-//     useNewUrlParser: true,
-//     useCreateIndex: true
-//   })
-//   .then(() => {
-//     console.log('MongoDB Connected...')
-//     const port =  8000;
-//     const server = app.listen(port, () => console.log(`Server started on port ${port}`));
-//     const io = require('./socket').init(server);
-//
-//     io.on('connection', socket => {
-//       console.log('Client connected');
-//
-//     })
-//
-//   })
-//   .catch(err => console.log(err));
+module.exports = server;
