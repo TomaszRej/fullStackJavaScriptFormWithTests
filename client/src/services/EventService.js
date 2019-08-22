@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const register = (data) => {
   return axios({
     method: "post",

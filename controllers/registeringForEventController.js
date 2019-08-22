@@ -5,6 +5,7 @@ const Joi = require('joi');
 
 exports.register = async (req, res, next) => {
 
+  console.log(req.body)
   const schema = {
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
