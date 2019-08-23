@@ -6,7 +6,7 @@
 
 const initialState = {
   loading: false,
-  errors: null
+  error: null
 };
 
 const RegisterForEventReducer = (state = initialState, action) => {
@@ -25,7 +25,7 @@ const RegisterForEventReducer = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        errors: action.payload
+        error: action.payload
       };
     default:
       return state;

@@ -5,21 +5,17 @@ import {
 } from "./types";
 import EventService from "../../services/EventService";
 
-export const register = (data) => {
+export const register = (data, succeded, failed) => {
   return async (dispatch) => {
-
-
-
     dispatch({ type: REGISTER_FOR_EVENT });
 
     EventService.register(data).then(response => {
       dispatch({ type: REGISTER_FOR_EVENT_SUCCESS, payload: response });
-      //openSnackbar(({ message: "Dodano pracownika", variant: "success" }));
+      typeof succeded === "function" && succeded();
 
     }).catch(err => {
-      dispatch({ type: REGISTER_FOR_EVENT_FAILED, payload: err });
-   
-      //openSnackbar(({ message: err.response.data.message, variant: "error" }));
+      dispatch({ type: REGISTER_FOR_EVENT_FAILED, payload: err.message });
+      typeof failed === "function" && failed(err.message);
     });
 
   };

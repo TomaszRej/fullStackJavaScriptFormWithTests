@@ -12,7 +12,7 @@ afterEach(cleanup);
 
 const renderComponent = () => render(
   <Provider store={store}>
-    <EventForm />
+    <EventForm/>
   </Provider>
 );
 
@@ -62,7 +62,6 @@ it("should display invalid email message when submitted with invalid email", () 
 
   expect(getByText("Email address is invalid")).toBeInTheDocument()
 });
-
 
 it("should render loader compnent when loading", () => {
   const { getByText,getByLabelText } = renderComponent();

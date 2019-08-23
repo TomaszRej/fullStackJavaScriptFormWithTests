@@ -1,0 +1,1 @@
+export const successMessage = "Pomyślnie zarejestrowano na wydarzenie";

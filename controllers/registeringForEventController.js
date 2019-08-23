@@ -1,7 +1,6 @@
 const Joi = require('joi');
 const Event = require('../models//Event');
 
-
 exports.register = async (req, res, next) => {
 
   const schema = {
@@ -13,8 +12,8 @@ exports.register = async (req, res, next) => {
 
   const result = Joi.validate(req.body, schema);
 
-  if (result.error) {
-    res.status(400).send(result.error.details);
+  if (result.error !== null) {
+    res.status(400).send({ message: result.error.details[0].message });
     return
   }
 
@@ -27,7 +26,7 @@ exports.register = async (req, res, next) => {
     });
 
     newEvent.save();
-    res.status(201).json({message: "Event created!", data: newEvent});
+    res.status(201).json({ message: "Event created!", data: newEvent });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

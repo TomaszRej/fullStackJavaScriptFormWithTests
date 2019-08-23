@@ -6,6 +6,8 @@ import validate from "../../utilities/validation";
 import createRegisterObject from "../../utilities/helpers/createRegisterObject"
 import { Row, Col } from "../layout/grid";
 import Loader from "../loader/Loader";
+import Message from "../message/Message";
+import { successMessage } from "../../constant";
 
 class EventForm extends Component {
   constructor(props) {
@@ -50,7 +52,12 @@ class EventForm extends Component {
       },
       canSubmit: false,
       submitted: false,
-      showSuccessMessage: false
+      message: {
+        show: false,
+        type: "",
+        value: ""
+      }
+
     }
   }
 
@@ -88,20 +95,33 @@ class EventForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const { firstName, lastName, email, eventDate } = this.state;
+    const { firstName, lastName, email, eventDate, message } = this.state;
 
     this.setState({
       submitted: true,
     })
 
+    const newMessage = { ...message };
+
     if (firstName.valid && lastName.valid && email.valid && eventDate.valid) {
       this.clearInputs();
-      this.props.register(createRegisterObject(this.state, ()=> {
-        this.setState({
+      this.props.register(createRegisterObject(this.state), () => {
+        newMessage.type = "success";
+        newMessage.show = true;
+        newMessage.value = successMessage;
 
+        this.setState({
+          message: newMessage
         })
-        
-      }, (err) => {}));
+      }, (err) => {
+        newMessage.type = "danger";
+        newMessage.show = true;
+        newMessage.value = err
+
+        this.setState({
+          message: newMessage
+        })
+      });
     }
 
   };
@@ -136,17 +156,29 @@ class EventForm extends Component {
     return validationClass
   };
 
+  hideMessage = () => {
+    const newMessage = {
+      show: false,
+      type: "",
+      value: "",
+    };
+
+    this.setState({
+      message: newMessage
+    })
+  }
+
 
   render() {
-    const { firstName, lastName, email, eventDate, canSubmit } = this.state;
+    const { firstName, lastName, email, eventDate, canSubmit, message } = this.state;
 
     const firstNameClass = this.createInputClass(firstName);
     const lastNameClass = this.createInputClass(lastName);
     const emailClass = this.createInputClass(email);
     const eventDateClass = this.createInputClass(eventDate);
 
-    if(this.props.loading){
-      return <Loader/>
+    if (this.props.loading) {
+      return <Loader />
     }
 
     return (
@@ -155,14 +187,13 @@ class EventForm extends Component {
           <form onSubmit={this.handleSubmit} noValidate>
             <Row>
               <Col>
-
-                <div className="alert alert-danger " role="alert">
-                  <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-                  <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-
+                {message.show &&
+                  <Message
+                    type={message.type}
+                    message={message.value}
+                    handleClick={this.hideMessage}
+                  />
+                }
               </Col>
             </Row>
             <Row>
@@ -178,9 +209,6 @@ class EventForm extends Component {
                     placeholder="First name"
                     required
                   />
-                  <div className="valid-feedback">
-                    This field is required
-                  </div>
                 </div>
               </Col>
               <Col>
@@ -254,7 +282,8 @@ class EventForm extends Component {
 
 const mapStateToProps = state => {
   return {
-    loading: state.RegisterForEventReducer.loading
+    loading: state.RegisterForEventReducer.loading,
+    error: state.RegisterForEventReducer.error
   }
 }
 
