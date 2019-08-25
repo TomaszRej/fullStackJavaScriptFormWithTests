@@ -53,4 +53,6 @@ mongoose.connect(db, {
   })
   .catch(err => console.log(err));
 
-module.exports = server;
+
+
+module.exports = app;

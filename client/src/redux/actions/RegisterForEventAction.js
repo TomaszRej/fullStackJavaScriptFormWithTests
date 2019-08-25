@@ -12,10 +12,9 @@ export const register = (data, succeded, failed) => {
     EventService.register(data).then(response => {
       dispatch({ type: REGISTER_FOR_EVENT_SUCCESS, payload: response });
       typeof succeded === "function" && succeded();
-
     }).catch(err => {
-      dispatch({ type: REGISTER_FOR_EVENT_FAILED, payload: err.message });
-      typeof failed === "function" && failed(err.message);
+      dispatch({ type: REGISTER_FOR_EVENT_FAILED, payload: err.response.data.message });
+      typeof failed === "function" && failed(err.response.data.message);
     });
 
   };
