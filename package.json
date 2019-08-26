@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --timeout 10000",
-    "client-install": "npm install --prefix client",
+    "server-test": "NODE_ENV=test mocha --timeout 10000",
     "client-test": "npm test --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "client-install": "npm install --prefix client",
     "start": "node server.js",
     "server": "nodemon server.js",
-    "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "client": "npm start --prefix client"
   },
   "author": "",
   "license": "ISC",
@@ -26,8 +26,6 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
-    "mocha": "^6.2.0",
-    "sinon": "^7.4.1",
-    "supertest": "^4.0.2"
+    "mocha": "^6.2.0"
   }
 }

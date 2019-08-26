@@ -10,9 +10,12 @@ const renderComponent = () => render(
   <Message
     message="messageTest"
     type="danger"
+    show={true}
     handleClick={handleSpanClick}
   />
 );
+
+
 
 it("should render message", () => {
   const { getByText } = renderComponent();
@@ -36,4 +39,11 @@ it("should fire handle click method", () => {
   fireEvent.click(span);
 
   expect(handleSpanClick).toHaveBeenCalled()
+});
+
+it("should not render message", () => {
+  const { findByText } = render(<Message show={false}/>);;
+  const element = findByText("messageTest");
+  
+  expect(element).not.toBeInTheDocument
 });

@@ -1,20 +1,12 @@
 const express = require('express');
-const path = require('path');
 const config = require('config');
 const mongoose = require('mongoose');
 
-// const authRoutes = require('./routes/auth');
-// const postRoutes = require('./routes/post');
-
 const registeringForEventRoutes = require('./routes/registeringForEventRoutes');
-
-
 
 const app = express();
 
 app.use(express.json());
-
-
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -37,17 +29,15 @@ app.use((error, req, res, next) => {
   res.status(status).json({ message: message, data: data });
 });
 
-
 const db = config.get('mongoURI');
 
-let server;
 mongoose.connect(db, {
-    useNewUrlParser: true,
-    useCreateIndex: true
-  })
+  useNewUrlParser: true,
+  useCreateIndex: true
+})
   .then(() => {
-    const port =  8000;
-    server = app.listen(port, () => console.log(`Server started on port ${port}`));
+    const port = 8000;
+    app.listen(port, () => console.log(`Server started on port ${port}`));
 
 
   })

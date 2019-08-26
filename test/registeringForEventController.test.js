@@ -17,7 +17,6 @@ describe('/registerForEvent', () => {
       .post('/registerForEvent/')
       .send(event)
       .end((err, res) => {
-
         res.should.have.status(400);
         res.body.should.be.a('object');
         res.body.should.have.property('message');
@@ -25,6 +24,7 @@ describe('/registerForEvent', () => {
         done();
       });
   });
+  
   it('should not POST an event with invalid email field', (done) => {
     let event = {
       firstName: "firstNameTest",

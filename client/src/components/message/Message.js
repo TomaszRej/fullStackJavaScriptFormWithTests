@@ -1,13 +1,17 @@
 import React from "react";
 import classNames from "classnames";
 
-function Message({ type, message, handleClick }) {
+function Message({ type, message, handleClick, show }) {
 
   const messageClass = classNames({
     "alert": true,
     "alert-danger": type === "danger",
     "alert-success": type === "success"
   });
+
+  if (!show) {
+    return null;
+  }
 
   return (
     <div className={messageClass} role="alert">
